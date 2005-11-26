@@ -85,9 +85,6 @@ namespace rw
 		Triangle *		mTriangles;
 		Color *			mPreLitLum;
 		TexCoords *		mTexCoords[RW_GEOMETRY_MAX_TEXTURE_COORDS];
-		Sphere			mBoundingSphere;
-		int				mHasPosition;	// strange
-		int				mHasNormals;	// strange
 		MorphTarget *	mMorphTargets;
 		MaterialList	mMaterialList;
 	};

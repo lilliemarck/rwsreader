@@ -63,8 +63,6 @@ void rw::FrameList::read(Stream &stream)
 		assert(unknown == 0 && "Unknown was value different than ususal");
 	}
 
-	int pos = stream.mFile.tellg();
-
 	// Extensions, one for each Frame
 	for (int i=0; i<mNumFrames; ++i)
 	{

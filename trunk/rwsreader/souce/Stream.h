@@ -50,6 +50,9 @@ namespace rw
 
 		// Criterion Toolkit
 		rwID_HANIMPLUGIN		= 0x011e,
+
+		// Criterion World
+		ID_BINMESHPLUGIN		= 0x050e
 	};
 
 	struct ChunkHeaderInfo

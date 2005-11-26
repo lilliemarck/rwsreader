@@ -102,20 +102,28 @@ void rw::Geometry::read(Stream &stream)
 	}
 
 	// Bounding sphere
-	stream.read(reinterpret_cast<float *>(&mBoundingSphere), sizeof(Sphere));
-	stream.read(&mHasPosition);
-	stream.read(&mHasNormals);
 
-	// Morph targets and their vertices
-	// Must see in what order things are stored when multiple morph targets are used
-	mMorphTargets				= new MorphTarget[mNumMorphTargets];
-	mMorphTargets[0].vertices	= new Vector[mNumVertices];
-	stream.read(reinterpret_cast<float *>(mMorphTargets[0].vertices), sizeof(Vector)*mNumVertices);
+	// Morph targets
+	mMorphTargets = new MorphTarget[mNumMorphTargets];
+	for (int i=0; i<mNumMorphTargets; ++i)
+	{
+		MorphTarget &morphTarget = mMorphTargets[i];
 
-	// Morph target's normals
-	if (mFlags & GF_NORMALS) {
-		mMorphTargets[0].normals = new Vector[mNumVertices];
-		stream.read(reinterpret_cast<float *>(mMorphTargets[0].normals), sizeof(Vector)*mNumVertices);
+		int hasPositions;
+		int hasNormals;
+		stream.read(reinterpret_cast<float *>(&morphTarget.boundingSphere), sizeof(Sphere));
+		stream.read(&hasPositions);
+		stream.read(&hasNormals);
+
+		if (hasPositions) {
+			morphTarget.vertices = new Vector[mNumVertices];
+			stream.read(reinterpret_cast<float *>(morphTarget.vertices), sizeof(Vector)*mNumVertices);
+		}
+
+		if (hasNormals) {
+			morphTarget.normals = new Vector[mNumVertices];
+			stream.read(reinterpret_cast<float *>(morphTarget.normals), sizeof(Vector)*mNumVertices);
+		}
 	}
 
 	// Material list chunk
@@ -127,6 +135,7 @@ void rw::Geometry::read(Stream &stream)
 	mMaterialList.read(stream);
 
 	// Extension chunk
+//	int pos = stream.mFile.tellg();
 	stream.read(&chunkHeaderInfo);
 	if (chunkHeaderInfo.type != ID_EXTENSION) {
 		std::cerr << "Unknown format of Geometry";
@@ -154,7 +163,7 @@ void rw::GeometryList::read(Stream &stream)
 	ChunkHeaderInfo chunkHeaderInfo;
 	stream.read(&chunkHeaderInfo);
 	if (chunkHeaderInfo.type != ID_STRUCT) {
-		std::cerr << "Unknown format of Clump";
+		std::cerr << "Unknown format of Geometry";
 		return;
 	}
 

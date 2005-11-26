@@ -44,8 +44,6 @@ rw::Material::~Material()
 
 void rw::Material::read(Stream &stream)
 {
-	memset(this, 0, sizeof(Material));
-
 	ChunkHeaderInfo chunkHeaderInfo;
 
 	// Struct chunk
@@ -61,7 +59,7 @@ void rw::Material::read(Stream &stream)
 	assert(unknown == 0 && "Unknown was value different than ususal");
 	stream.read((void *)&mColor, sizeof(Color));
 	stream.read(&unknown, sizeof(int));
-	assert(unknown == 0xE28E70C && "Unknown was value different than ususal");
+//	assert(unknown == 0xE28E70C && "Unknown was value different than ususal");
 	stream.read(&textured, sizeof(int));
 	stream.read(&mAmbient);
 	stream.read(&mSpecular);
@@ -119,7 +117,6 @@ void rw::MaterialList::read(Stream &stream)
 		assert(unknown == -1 && "Unknown was value different than ususal");
 
 		mMaterials = new Material[mNumMaterials];
-
 		for (int i=0; i<mNumMaterials; ++i)
 		{
 			// Material chunk

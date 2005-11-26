@@ -112,7 +112,7 @@ void rw::Clump::read(Stream &stream)
 			return;
 		}
 
-		// Create new geometry
+		// Create new atomic
 		mAtomics[i].read(stream);
 	}
 

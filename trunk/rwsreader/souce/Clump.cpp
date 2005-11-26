@@ -29,10 +29,14 @@
 #include <iostream>
 #include "Clump.h"
 
-rw::Atomic::Atomic(Stream &stream)
+rw::Atomic::Atomic()
 {
 	memset(this, 0, sizeof(Atomic));
+}
 
+
+void rw::Atomic::read(Stream &stream)
+{
 	ChunkHeaderInfo chunkHeaderInfo;
 
 	// Struct chunk
@@ -98,7 +102,7 @@ void rw::Clump::read(Stream &stream)
 	mGeometryList.read(stream);
 
 	// Atomics
-	mAtomics = new Atomic*[mNumAtomics];
+	mAtomics = new Atomic[mNumAtomics];
 	for (int i=0; i < mNumAtomics; ++i)
 	{
 		// Atomic chunk
@@ -109,7 +113,7 @@ void rw::Clump::read(Stream &stream)
 		}
 
 		// Create new geometry
-		mAtomics[i] = new Atomic(stream);
+		mAtomics[i].read(stream);
 	}
 
 	// Extension
@@ -124,8 +128,5 @@ void rw::Clump::read(Stream &stream)
 
 rw::Clump::~Clump()
 {
-	for (int i=0; i < mNumAtomics; ++i)
-		SAFE_DELETE(mAtomics[i]);
-
 	SAFE_DELETE_ARRAY(mAtomics);
 }

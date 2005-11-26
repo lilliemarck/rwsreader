@@ -41,7 +41,8 @@ namespace rw
 	class Atomic
 	{
 	public:
-		Atomic(Stream &stream);
+				Atomic();
+		void	read(Stream &stream);
 
 		int mFrame;
 		int mGeometry;
@@ -63,7 +64,7 @@ namespace rw
 		int				mNumCameras;	/**< Not saved with clump			*/
 		FrameList		mFrameList;		/**< Frames for Clump and Atomics	*/
 		GeometryList	mGeometryList;	/**< Contains all geometries		*/
-		Atomic**		mAtomics;
+		Atomic*			mAtomics;
 	};
 }
 

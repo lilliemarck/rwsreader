@@ -41,8 +41,8 @@ rw::Texture::Texture()
 
 rw::Texture::~Texture()
 {
-	SAFE_DELETE(mMaskName);
-	SAFE_DELETE(mName);
+	SAFE_DELETE_ARRAY(mMaskName);
+	SAFE_DELETE_ARRAY(mName);
 }
 
 

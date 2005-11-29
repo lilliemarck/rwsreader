@@ -49,21 +49,21 @@ rw::Geometry::Geometry(void)
 
 rw::Geometry::~Geometry()
 {
-	SAFE_DELETE(mMorphInterpolators);
+	SAFE_DELETE_ARRAY(mMorphInterpolators);
 
 	for (int i=0; i<mNumMorphTargets; ++i)
 	{
-		SAFE_DELETE(mMorphTargets[i].normals);
-		SAFE_DELETE(mMorphTargets[i].vertices);
+		SAFE_DELETE_ARRAY(mMorphTargets[i].normals);
+		SAFE_DELETE_ARRAY(mMorphTargets[i].vertices);
 	}
-	SAFE_DELETE(mMorphTargets);
+	SAFE_DELETE_ARRAY(mMorphTargets);
 
-	SAFE_DELETE(mTriangles);
+	SAFE_DELETE_ARRAY(mTriangles);
 
 	for (int i=0; i<mNumTexCoordSets; ++i)
-		SAFE_DELETE(mTexCoords[i]);
+		SAFE_DELETE_ARRAY(mTexCoords[i]);
 
-	SAFE_DELETE(mPreLitLum);
+	SAFE_DELETE_ARRAY(mPreLitLum);
 }
 
 

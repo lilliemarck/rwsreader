@@ -38,7 +38,7 @@ rw::FrameList::FrameList()
 
 rw::FrameList::~FrameList()
 {
-	SAFE_DELETE(mFrames);
+	SAFE_DELETE_ARRAY(mFrames);
 }
 
 

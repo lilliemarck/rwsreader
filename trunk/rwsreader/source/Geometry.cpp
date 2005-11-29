@@ -35,6 +35,12 @@ rw::MorphTarget::MorphTarget()
 }
 
 
+rw::MorphInterpolator::MorphInterpolator()
+{
+	memset(this, 0, sizeof(MorphInterpolator));
+}
+
+
 rw::Geometry::Geometry(void)
 {
 	memset(this, 0, sizeof(Geometry));
@@ -43,6 +49,8 @@ rw::Geometry::Geometry(void)
 
 rw::Geometry::~Geometry()
 {
+	SAFE_DELETE(mMorphInterpolators);
+
 	for (int i=0; i<mNumMorphTargets; ++i)
 	{
 		SAFE_DELETE(mMorphTargets[i].normals);
@@ -134,14 +142,51 @@ void rw::Geometry::read(Stream &stream)
 	}
 	mMaterialList.read(stream);
 
-	// Extension chunk
-//	int pos = stream.mFile.tellg();
+	// Extensions
 	stream.read(&chunkHeaderInfo);
 	if (chunkHeaderInfo.type != ID_EXTENSION) {
 		std::cerr << "Unknown format of Geometry";
 		return;
 	}
-	stream.skip(chunkHeaderInfo.length);
+	int length = chunkHeaderInfo.length;
+	while (length > 0)
+	{
+		stream.read(&chunkHeaderInfo);
+		length -= 12 + chunkHeaderInfo.length;
+
+		switch (chunkHeaderInfo.type)
+		{
+			case ID_MORPHPLUGIN:
+				std::cout << "Morph plugin" << std::endl;
+				stream.read(&mNumMorphInterpolators);
+				mMorphInterpolators = new MorphInterpolator[mNumMorphInterpolators];
+				for (int i=0; i<mNumMorphInterpolators; ++i) {
+					int pos = stream.mFile.tellg();
+					int flags; // unused
+					stream.read(&flags);
+					stream.read(&mMorphInterpolators[i].startMorphTarget);
+					stream.read(&mMorphInterpolators[i].endMorphTarget);
+					stream.read(&mMorphInterpolators[i].time);
+					stream.read(&mMorphInterpolators[i].next);
+				}
+				break;
+
+			case ID_USERDATAPLUGIN:
+				std::cout << "UserData plugin";
+				stream.skip(chunkHeaderInfo.length);
+				break;
+
+			case ID_BINMESHPLUGIN:
+				std::cout << "Bin mesh plugin";
+				stream.skip(chunkHeaderInfo.length);
+				break;
+
+			default:
+				std::cout << "Unknown geometry extension " << chunkHeaderInfo.type;
+				stream.skip(chunkHeaderInfo.length);
+				break;
+		}
+	}
 }
 
 

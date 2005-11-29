@@ -44,9 +44,24 @@ namespace rw
 	public:
 		MorphTarget();
 
-		Sphere		boundingSphere;
-		Vector *	vertices;
-		Vector *	normals;
+		Sphere		boundingSphere;	/**< Bounding sphere that encapulates the geometry	*/
+		Vector *	vertices;		/**< Vertex list for geomtery						*/
+		Vector *	normals;		/**< Normal list for geometry						*/
+	};
+
+
+	/**
+	* Morph animation extension
+	*/
+	class MorphInterpolator
+	{
+	public:
+		MorphInterpolator();
+
+		int		startMorphTarget;	/**< Index of starting MorphTarget		*/
+		int		endMorphTarget;		/**< Index of end MorphTarget			*/
+		float	time;				/**< Duration of interpolator			*/
+		int		next;				/**< Index of next MorphInterpolator	*/
 	};
 
 
@@ -77,16 +92,20 @@ namespace rw
 				~Geometry	();
 		void	read		(Stream &stream);
 
-		Flag			mFlags;
-		int				mNumTriangles;
-		int				mNumVertices;
-		int				mNumMorphTargets;
-		int				mNumTexCoordSets;
-		Triangle *		mTriangles;
-		Color *			mPreLitLum;
-		TexCoords *		mTexCoords[RW_GEOMETRY_MAX_TEXTURE_COORDS];
-		MorphTarget *	mMorphTargets;
-		MaterialList	mMaterialList;
+		Flag				mFlags;
+		int					mNumTriangles;
+		int					mNumVertices;
+		int					mNumMorphTargets;
+		int					mNumTexCoordSets;
+		Triangle *			mTriangles;
+		Color *				mPreLitLum;
+		TexCoords *			mTexCoords[RW_GEOMETRY_MAX_TEXTURE_COORDS];
+		MorphTarget *		mMorphTargets;
+		MaterialList		mMaterialList;
+
+		// Morph animation extension
+		int					mNumMorphInterpolators;
+		MorphInterpolator*	mMorphInterpolators;
 	};
 
 

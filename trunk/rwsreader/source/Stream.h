@@ -49,12 +49,14 @@ namespace rw
 		ID_GEOMETRYLIST			= 0x1A,
 
 		// Criterion Toolkit
-		rwID_HANIMPLUGIN		= 0x011e,
+		ID_MORPHPLUGIN			= 0x0105,
+		ID_HANIMPLUGIN			= 0x011e,
+		ID_USERDATAPLUGIN		= 0x011f,
 
 		// Criterion World
 		ID_BINMESHPLUGIN		= 0x050e
 	};
-
+	
 	struct ChunkHeaderInfo
 	{
 		ObjectID		type;			// Plugin ID

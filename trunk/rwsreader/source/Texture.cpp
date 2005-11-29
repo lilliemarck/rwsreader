@@ -29,9 +29,9 @@
 #include "Core.h"
 #include "Texture.h"
 
-#define TEXTURE_FILTER_MODE_MASK	0x000000ff
-#define TEXTURE_ADDRESS_MODE_U_MASK 0x00000f00
-#define TEXTURE_ADDRESS_MODE_V_MASK 0x0000f000
+#define RW_TEXTURE_FILTER_MODE_MASK		0x000000ff
+#define RW_TEXTURE_ADDRESS_MODE_U_MASK	0x00000f00
+#define RW_TEXTURE_ADDRESS_MODE_V_MASK	0x0000f000
 
 rw::Texture::Texture()
 {
@@ -60,9 +60,9 @@ void rw::Texture::read(Stream &stream)
 
 	// Texture modes
 	stream.read(&temp);
-	mFilterMode		= static_cast<FilterMode>(temp & TEXTURE_FILTER_MODE_MASK);
-	mAddressModeU	= static_cast<AddressMode>(temp & TEXTURE_ADDRESS_MODE_U_MASK >> 8);
-	mAddressModeV	= static_cast<AddressMode>(temp & TEXTURE_ADDRESS_MODE_V_MASK >> 12);
+	mFilterMode		= static_cast<FilterMode>(temp & RW_TEXTURE_FILTER_MODE_MASK);
+	mAddressModeU	= static_cast<AddressMode>(temp & RW_TEXTURE_ADDRESS_MODE_U_MASK >> 8);
+	mAddressModeV	= static_cast<AddressMode>(temp & RW_TEXTURE_ADDRESS_MODE_V_MASK >> 12);
 
 	// Texture name
 	stream.read(&chunkHeaderInfo);

@@ -70,10 +70,10 @@ namespace rw
 	public:
 		void read(Stream &stream);
 
-		Vector right;
-		Vector up;
-		Vector at;
-		Vector pos;
+		Vector right;	/**< X-axis		*/
+		Vector up;		/**< Y-axis		*/
+		Vector at;		/**< Z-axis		*/
+		Vector pos;		/**< Position	*/
 	};
 
 	struct Sphere

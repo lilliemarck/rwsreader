@@ -35,7 +35,7 @@ namespace rw
 	enum ObjectID
 	{
 		// Core
-		ID_NA_OBJECT			= 0x00,
+        ID_NA_OBJECT			= 0x00,
 		ID_STRUCT				= 0x01,
 		ID_STRING				= 0x02,
 		ID_EXTENSION			= 0x03,
@@ -72,13 +72,15 @@ namespace rw
 	class Stream
 	{
 	public:
-		bool open(const char *filename);
-		void read(ChunkHeaderInfo *chunkHeaderInfo);
-		void read(short *ints, unsigned int numBytes = sizeof(short));
-		void read(int *ints, unsigned int numBytes = sizeof(int));
-		void read(float *floats, unsigned int numBytes = sizeof(float));
-		void read(void *buffer, unsigned int length);
-		void skip(unsigned int offset);
+		bool open       (const char *filename);
+        void close      ();
+        bool findChunk  (ObjectID type);
+		bool read       (ChunkHeaderInfo *chunkHeaderInfo);
+		void read       (short *ints, unsigned int numBytes = sizeof(short));
+		void read       (int *ints, unsigned int numBytes = sizeof(int));
+		void read       (float *floats, unsigned int numBytes = sizeof(float));
+		void read       (void *buffer, unsigned int length);
+		void skip       (unsigned int offset);
 
 		std::ifstream mFile;
 	};

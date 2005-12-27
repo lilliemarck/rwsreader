@@ -9,7 +9,7 @@ int main(int argc, const char *argv[])
     stream.open(argv[1]);
 
 	rw::ChunkHeaderInfo chunkHeaderInfo;
-	stream.read(&chunkHeaderInfo, sizeof(rw::ChunkHeaderInfo));
+	stream.read(&chunkHeaderInfo);
 
 	if (chunkHeaderInfo.type == rw::ID_CLUMP)
     {

@@ -34,9 +34,30 @@ bool rw::Stream::open(const char *filename)
 }
 
 
-void rw::Stream::read(ChunkHeaderInfo *chunkHeaderInfo)
+void rw::Stream::close()
+{
+    mFile.close();
+}
+
+
+bool rw::Stream::findChunk(ObjectID type)
+{
+    ChunkHeaderInfo chunkHeaderInfo;
+    
+    while (read(&chunkHeaderInfo))
+    {
+        if (chunkHeaderInfo.type == type)
+            return true;
+        skip(chunkHeaderInfo.length);
+    }
+    return false;
+}
+
+
+bool rw::Stream::read(ChunkHeaderInfo *chunkHeaderInfo)
 {
 	mFile.read(reinterpret_cast<char *>(chunkHeaderInfo), sizeof(ChunkHeaderInfo));
+    return mFile.good();
 }
 
 

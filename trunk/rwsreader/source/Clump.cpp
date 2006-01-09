@@ -1,28 +1,22 @@
-/*
-* Copyright (c) 2005, Jonathan Lilliemarck Jansson
-* All rights reserved.
+/* Copyright (c) 2005-2006  Jonathan Lilliemarck Jansson
 *
-* Redistribution and use in source and binary forms, with or without
-* modification, are permitted provided that the following conditions are met:
+* This software is provided 'as-is', without any express or implied warranty.
+* In no event will the authors be held liable for any damages arising from
+* the use of this software.
 *
-* 1. Redistributions of source code must retain the above copyright notice,
-*    this list of conditions and the following disclaimer.
-* 2. Redistributions in binary form must reproduce the above copyright notice,
-*    this list of conditions and the following disclaimer in the documentation
-*    and/or other materials provided with the distribution.
-* 3. The name of the author may not be used to endorse or promote products
-*    derived from this software without specific prior written permission.
+* Permission is granted to anyone to use this software for any purpose,
+* including commercial applications, and to alter it and redistribute it
+* freely, subject to the following restrictions:
 *
-* THIS SOFTWARE IS PROVIDED BY THE AUTHOR "AS IS" AND ANY EXPRESS OR IMPLIED
-* WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
-* MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO
-* EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
-* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
-* PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
-* OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
-* WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
-* OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
-* ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+* 1. The origin of this software must not be misrepresented; you must not
+*    claim that you wrote the original software. If you use this software in
+*    a product, an acknowledgment in the product documentation would be
+*    appreciated but is not required.
+*
+* 2. Altered source versions must be plainly marked as such, and must not be
+*    misrepresented as being the original software.
+*
+* 3. This notice may not be removed or altered from any source distribution.
 */
 
 #include <assert.h>
@@ -31,7 +25,7 @@
 
 rw::Atomic::Atomic()
 {
-	memset(this, 0, sizeof(Atomic));
+	MemZero(this);
 }
 
 
@@ -47,8 +41,8 @@ void rw::Atomic::read(Stream &stream)
 	}
 
 	int unknown;
-	stream.read(&mFrame);
-	stream.read(&mGeometry);
+	stream.read(&m_frame);
+	stream.read(&m_geometry);
 	stream.read(&unknown);
 	assert(unknown == 5 && "Unknown was value different than ususal");
 	stream.read(&unknown);
@@ -66,7 +60,7 @@ void rw::Atomic::read(Stream &stream)
 
 rw::Clump::Clump()
 {
-	memset(this, 0, sizeof(Clump));
+	MemZero(this);
 }
 
 
@@ -81,9 +75,9 @@ void rw::Clump::read(Stream &stream)
 	}
 
 	// Atrributes
-	stream.read(&mNumAtomics);
-	stream.read(&mNumLights);
-	stream.read(&mNumCameras);
+	stream.read(&m_numAtomics);
+	stream.read(&m_numLights);
+	stream.read(&m_numCameras);
 
 	// FrameList
 	stream.read(&chunkHeaderInfo);
@@ -91,7 +85,7 @@ void rw::Clump::read(Stream &stream)
 		std::cerr << "Unknown format of Clump";
 		return;
 	}
-	mFrameList.read(stream);
+	m_frameList.read(stream);
 
 	// GeometryList	
 	stream.read(&chunkHeaderInfo);
@@ -99,11 +93,11 @@ void rw::Clump::read(Stream &stream)
 		std::cerr << "Unknown format of Clump";
 		return;
 	}
-	mGeometryList.read(stream);
+	m_geometryList.read(stream);
 
 	// Atomics
-	mAtomics = new Atomic[mNumAtomics];
-	for (int i=0; i < mNumAtomics; ++i)
+	m_atomics = new Atomic[m_numAtomics];
+	for (int i=0; i < m_numAtomics; i++)
 	{
 		// Atomic chunk
 		stream.read(&chunkHeaderInfo);
@@ -113,7 +107,7 @@ void rw::Clump::read(Stream &stream)
 		}
 
 		// Create new atomic
-		mAtomics[i].read(stream);
+		m_atomics[i].read(stream);
 	}
 
 	// Extension
@@ -128,5 +122,5 @@ void rw::Clump::read(Stream &stream)
 
 rw::Clump::~Clump()
 {
-	SAFE_DELETE_ARRAY(mAtomics);
+	delete [] m_atomics;
 }

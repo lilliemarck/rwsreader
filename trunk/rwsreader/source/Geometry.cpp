@@ -1,28 +1,22 @@
-/*
-* Copyright (c) 2005, Jonathan Lilliemarck Jansson
-* All rights reserved.
+/* Copyright (c) 2005-2006  Jonathan Lilliemarck Jansson
 *
-* Redistribution and use in source and binary forms, with or without
-* modification, are permitted provided that the following conditions are met:
+* This software is provided 'as-is', without any express or implied warranty.
+* In no event will the authors be held liable for any damages arising from
+* the use of this software.
 *
-* 1. Redistributions of source code must retain the above copyright notice,
-*    this list of conditions and the following disclaimer.
-* 2. Redistributions in binary form must reproduce the above copyright notice,
-*    this list of conditions and the following disclaimer in the documentation
-*    and/or other materials provided with the distribution.
-* 3. The name of the author may not be used to endorse or promote products
-*    derived from this software without specific prior written permission.
+* Permission is granted to anyone to use this software for any purpose,
+* including commercial applications, and to alter it and redistribute it
+* freely, subject to the following restrictions:
 *
-* THIS SOFTWARE IS PROVIDED BY THE AUTHOR "AS IS" AND ANY EXPRESS OR IMPLIED
-* WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
-* MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO
-* EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
-* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
-* PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
-* OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
-* WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
-* OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
-* ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+* 1. The origin of this software must not be misrepresented; you must not
+*    claim that you wrote the original software. If you use this software in
+*    a product, an acknowledgment in the product documentation would be
+*    appreciated but is not required.
+*
+* 2. Altered source versions must be plainly marked as such, and must not be
+*    misrepresented as being the original software.
+*
+* 3. This notice may not be removed or altered from any source distribution.
 */
 
 #include <iostream>
@@ -31,39 +25,40 @@
 
 rw::MorphTarget::MorphTarget()
 {
-	memset(this, 0, sizeof(MorphTarget));
+	MemZero(this);
 }
 
 
 rw::MorphInterpolator::MorphInterpolator()
 {
-	memset(this, 0, sizeof(MorphInterpolator));
+	MemZero(this);
 }
 
 
 rw::Geometry::Geometry(void)
 {
-	memset(this, 0, sizeof(Geometry));
+	MemZero(this);
 }
 
 
 rw::Geometry::~Geometry()
 {
-	SAFE_DELETE_ARRAY(mMorphInterpolators);
+	delete [] m_norphInterpolators;
 
-	for (int i=0; i<mNumMorphTargets; ++i)
+	for (int i=0; i<m_numMorphTargets; i++)
 	{
-		SAFE_DELETE_ARRAY(mMorphTargets[i].normals);
-		SAFE_DELETE_ARRAY(mMorphTargets[i].vertices);
+		delete [] m_morphTargets[i].normals;
+		delete [] m_morphTargets[i].vertices;
 	}
-	SAFE_DELETE_ARRAY(mMorphTargets);
 
-	SAFE_DELETE_ARRAY(mTriangles);
+	delete [] m_morphTargets;
 
-	for (int i=0; i<mNumTexCoordSets; ++i)
-		SAFE_DELETE_ARRAY(mTexCoords[i]);
+	delete [] m_triangles;
 
-	SAFE_DELETE_ARRAY(mPreLitLum);
+	for (int i=0; i<m_numTexCoordSets; i++)
+		delete [] m_texCoords[i];
+
+	delete [] m_preLitLum;
 }
 
 
@@ -78,31 +73,31 @@ void rw::Geometry::read(Stream &stream)
 	}
 
 	// Attributes
-	stream.read(reinterpret_cast<int*>(&mFlags));
-	stream.read(&mNumTriangles);
-	stream.read(&mNumVertices);
-	stream.read(&mNumMorphTargets);
-	mNumTexCoordSets = (mFlags & 0x00ff0000) >> 16;
+	stream.read(reinterpret_cast<int*>(&m_flags));
+	stream.read(&m_numTriangles);
+	stream.read(&m_numVertices);
+	stream.read(&m_numMorphTargets);
+	m_numTexCoordSets = (m_flags & 0x00ff0000) >> 16;
 
 	// Prelit colors
-	if (mFlags & GF_PRELIT) {
-		mPreLitLum = new Color[mNumVertices];
-		stream.read(reinterpret_cast<float *>(mPreLitLum), sizeof(Color)*mNumVertices);
+	if (m_flags & GF_PRELIT) {
+		m_preLitLum = new Color[m_numVertices];
+		stream.read(reinterpret_cast<float *>(m_preLitLum), sizeof(Color)*m_numVertices);
 	}
 
 	// Texture Coordinates, redundant if
-	if ((mFlags & GF_TEXTURED) || (mFlags & GF_TEXTURED2)) {
-		for (int i=0; i<mNumTexCoordSets; ++i)
+	if ((m_flags & GF_TEXTURED) || (m_flags & GF_TEXTURED2)) {
+		for (int i=0; i<m_numTexCoordSets; i++)
 		{		
-			mTexCoords[i] = new TexCoords[mNumVertices];
-			stream.read(reinterpret_cast<float *>(mTexCoords[i]), sizeof(TexCoords)*mNumVertices);
+			m_texCoords[i] = new TexCoords[m_numVertices];
+			stream.read(reinterpret_cast<float *>(m_texCoords[i]), sizeof(TexCoords)*m_numVertices);
 		}
 	}
 
 	// Triangle information
-	mTriangles = new Triangle[mNumTriangles];
-	for (int i=0; i<mNumTriangles; ++i) {
-		Triangle &triangle = mTriangles[i];
+	m_triangles = new Triangle[m_numTriangles];
+	for (int i=0; i<m_numTriangles; i++) {
+		Triangle &triangle = m_triangles[i];
 		stream.read(reinterpret_cast<short *>(&triangle.vertIndex[1]));
 		stream.read(reinterpret_cast<short *>(&triangle.vertIndex[0]));
 		stream.read(reinterpret_cast<short *>(&triangle.matIndex));
@@ -112,10 +107,10 @@ void rw::Geometry::read(Stream &stream)
 	// Bounding sphere
 
 	// Morph targets
-	mMorphTargets = new MorphTarget[mNumMorphTargets];
-	for (int i=0; i<mNumMorphTargets; ++i)
+	m_morphTargets = new MorphTarget[m_numMorphTargets];
+	for (int i=0; i<m_numMorphTargets; i++)
 	{
-		MorphTarget &morphTarget = mMorphTargets[i];
+		MorphTarget &morphTarget = m_morphTargets[i];
 
 		int hasPositions;
 		int hasNormals;
@@ -124,13 +119,13 @@ void rw::Geometry::read(Stream &stream)
 		stream.read(&hasNormals);
 
 		if (hasPositions) {
-			morphTarget.vertices = new Vector[mNumVertices];
-			stream.read(reinterpret_cast<float *>(morphTarget.vertices), sizeof(Vector)*mNumVertices);
+			morphTarget.vertices = new Vector[m_numVertices];
+			stream.read(reinterpret_cast<float *>(morphTarget.vertices), sizeof(Vector)*m_numVertices);
 		}
 
 		if (hasNormals) {
-			morphTarget.normals = new Vector[mNumVertices];
-			stream.read(reinterpret_cast<float *>(morphTarget.normals), sizeof(Vector)*mNumVertices);
+			morphTarget.normals = new Vector[m_numVertices];
+			stream.read(reinterpret_cast<float *>(morphTarget.normals), sizeof(Vector)*m_numVertices);
 		}
 	}
 
@@ -140,7 +135,7 @@ void rw::Geometry::read(Stream &stream)
 		std::cerr << "Unknown format of Clump";
 		return;
 	}
-	mMaterialList.read(stream);
+	m_materialList.read(stream);
 
 	// Extensions
 	stream.read(&chunkHeaderInfo);
@@ -158,16 +153,16 @@ void rw::Geometry::read(Stream &stream)
 		{
 			case ID_MORPHPLUGIN:
 				std::cout << "Morph plugin" << std::endl;
-				stream.read(&mNumMorphInterpolators);
-				mMorphInterpolators = new MorphInterpolator[mNumMorphInterpolators];
-				for (int i=0; i<mNumMorphInterpolators; ++i) {
-					int pos = stream.mFile.tellg();
+				stream.read(&m_numMorphInterpolators);
+				m_norphInterpolators = new MorphInterpolator[m_numMorphInterpolators];
+				for (int i=0; i<m_numMorphInterpolators; i++) {
+					int pos = stream.m_file.tellg();
 					int flags; // unused
 					stream.read(&flags);
-					stream.read(&mMorphInterpolators[i].startMorphTarget);
-					stream.read(&mMorphInterpolators[i].endMorphTarget);
-					stream.read(&mMorphInterpolators[i].time);
-					stream.read(&mMorphInterpolators[i].next);
+					stream.read(&m_norphInterpolators[i].startMorphTarget);
+					stream.read(&m_norphInterpolators[i].endMorphTarget);
+					stream.read(&m_norphInterpolators[i].time);
+					stream.read(&m_norphInterpolators[i].next);
 				}
 				break;
 
@@ -192,13 +187,13 @@ void rw::Geometry::read(Stream &stream)
 
 rw::GeometryList::GeometryList()
 {
-	memset(this, 0, sizeof(GeometryList));
+	MemZero(this);
 }
 
 
 rw::GeometryList::~GeometryList()
 {
-	SAFE_DELETE_ARRAY(mGeometries);
+	delete [] m_geometries;
 }
 
 
@@ -213,10 +208,10 @@ void rw::GeometryList::read(Stream &stream)
 	}
 
 	// Attributes
-	stream.read(&mNumGeometries);
+	stream.read(&m_numGeometries);
 
-	mGeometries = new Geometry[mNumGeometries];
-	for (int i=0; i < mNumGeometries; ++i)
+	m_geometries = new Geometry[m_numGeometries];
+	for (int i=0; i < m_numGeometries; i++)
 	{
 		// Geometry
 		stream.read(&chunkHeaderInfo);
@@ -224,7 +219,7 @@ void rw::GeometryList::read(Stream &stream)
 			std::cerr << "Unknown format of Clump";
 			return;
 		}
-		mGeometries[i].read(stream);
+		m_geometries[i].read(stream);
 	}
 
 	// No extensions

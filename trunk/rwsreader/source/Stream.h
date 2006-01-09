@@ -1,28 +1,22 @@
-/*
-* Copyright (c) 2005, Jonathan Lilliemarck Jansson
-* All rights reserved.
+/* Copyright (c) 2005-2006  Jonathan Lilliemarck Jansson
 *
-* Redistribution and use in source and binary forms, with or without
-* modification, are permitted provided that the following conditions are met:
+* This software is provided 'as-is', without any express or implied warranty.
+* In no event will the authors be held liable for any damages arising from
+* the use of this software.
 *
-* 1. Redistributions of source code must retain the above copyright notice,
-*    this list of conditions and the following disclaimer.
-* 2. Redistributions in binary form must reproduce the above copyright notice,
-*    this list of conditions and the following disclaimer in the documentation
-*    and/or other materials provided with the distribution.
-* 3. The name of the author may not be used to endorse or promote products
-*    derived from this software without specific prior written permission.
+* Permission is granted to anyone to use this software for any purpose,
+* including commercial applications, and to alter it and redistribute it
+* freely, subject to the following restrictions:
 *
-* THIS SOFTWARE IS PROVIDED BY THE AUTHOR "AS IS" AND ANY EXPRESS OR IMPLIED
-* WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
-* MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO
-* EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
-* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
-* PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
-* OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
-* WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
-* OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
-* ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+* 1. The origin of this software must not be misrepresented; you must not
+*    claim that you wrote the original software. If you use this software in
+*    a product, an acknowledgment in the product documentation would be
+*    appreciated but is not required.
+*
+* 2. Altered source versions must be plainly marked as such, and must not be
+*    misrepresented as being the original software.
+*
+* 3. This notice may not be removed or altered from any source distribution.
 */
 
 #ifndef RW_STREAM_H
@@ -34,27 +28,28 @@ namespace rw
 {
 	enum ObjectID
 	{
-		// Core
-        ID_NA_OBJECT			= 0x00,
-		ID_STRUCT				= 0x01,
-		ID_STRING				= 0x02,
-		ID_EXTENSION			= 0x03,
-		ID_TEXTURE				= 0x06,
-		ID_MATERIAL				= 0x07,
-		ID_MATLIST				= 0x08,
-		ID_FRAMELIST			= 0x0E,
-		ID_GEOMETRY				= 0x0F,
-		ID_CLUMP				= 0x10,
-		ID_ATOMIC				= 0x14,
-		ID_GEOMETRYLIST			= 0x1A,
+		// Corerw
+        ID_NA_OBJECT		= 0x00,
+		ID_STRUCT			= 0x01,
+		ID_STRING			= 0x02,
+		ID_EXTENSION		= 0x03,
+		ID_TEXTURE			= 0x06,
+		ID_MATERIAL			= 0x07,
+		ID_MATLIST			= 0x08,
+		ID_FRAMELIST		= 0x0E,
+		ID_GEOMETRY			= 0x0F,
+		ID_CLUMP			= 0x10,
+		ID_ATOMIC			= 0x14,
+		ID_GEOMETRYLIST		= 0x1A,
+		ID_HANIMANIMATION	= 0x1B,
 
 		// Criterion Toolkit
-		ID_MORPHPLUGIN			= 0x0105,
-		ID_HANIMPLUGIN			= 0x011e,
-		ID_USERDATAPLUGIN		= 0x011f,
+		ID_MORPHPLUGIN		= 0x0105,
+		ID_HANIMPLUGIN		= 0x011e,
+		ID_USERDATAPLUGIN	= 0x011f,
 
 		// Criterion World
-		ID_BINMESHPLUGIN		= 0x050e
+		ID_BINMESHPLUGIN	= 0x050e
 	};
 	
 	struct ChunkHeaderInfo
@@ -82,7 +77,7 @@ namespace rw
 		void read       (void *buffer, unsigned int length);
 		void skip       (unsigned int offset);
 
-		std::ifstream mFile;
+		std::ifstream m_file;
 	};
 }
 

@@ -34,12 +34,13 @@ rw::HAnimHierarchy::~HAnimHierarchy()
 }
 
 
-void rw::HAnimHierarchy::read(Stream &stream)
+int rw::HAnimHierarchy::read(Stream &stream)
 {
 	int unknown;
 	stream.read(&unknown);
 	assert(unknown == 0x00000100);					// Always this?
-	stream.read(&unknown);
+	int id;
+	stream.read(&id);
 
 	stream.read(&m_numNodes);
 	stream.read(&unknown);
@@ -53,6 +54,8 @@ void rw::HAnimHierarchy::read(Stream &stream)
 		stream.read(&m_nodeInfo[i].m_nodeIndex);
 		stream.read(reinterpret_cast<int*>(&m_nodeInfo[i].m_flags));
 	}
+
+	return id;
 }
 
 
@@ -120,8 +123,8 @@ void rw::FrameList::read(Stream &stream)
 			{
 				if (chunkHeaderInfo.length > 12) {
 					m_frames[i].m_HAnimHierarchy = new HAnimHierarchy;
-					m_frames[i].m_HAnimHierarchy->read(stream);
-					m_frames[i].m_id = 0;
+					int id = m_frames[i].m_HAnimHierarchy->read(stream);
+					m_frames[i].m_id = id;
 				}
 				else {
 					int unknown;

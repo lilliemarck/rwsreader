@@ -50,7 +50,7 @@ namespace rw
 	public:
 				 HAnimHierarchy	();
 				~HAnimHierarchy	();
-		void	read			(Stream &stream);
+		int		read			(Stream &stream);
 
 		int				m_numNodes;	/** Number of nodes		*/
 		HAnimNodeInfo*	m_nodeInfo;	/** Array of node info	*/

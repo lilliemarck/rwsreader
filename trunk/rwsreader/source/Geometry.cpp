@@ -192,7 +192,7 @@ void rw::Geometry::read(Stream &stream)
 						stream.read(&m_vertexBoneWeights[i].weights[j]);
 				}
 
-				// Bone matrices
+				// Bone matrices, Note that they have to be post processed in the app.
 				m_skinToBoneMatrices = new Matrix44[m_numVertices];
 				for (int i=0; i < m_numBones; i++) {
 					for (int j=0; j<16; j++)

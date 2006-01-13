@@ -65,6 +65,10 @@ namespace rw
 	{
 		float weights[4]; /** Zero weights must come last */
 	};
+	/**
+	* Strange matrix used for inverse bone transformation.
+	* You need to put 1.0 into position m[15] manually.
+	*/
 	struct Matrix44
 	{
 		float m[16]; // Column major

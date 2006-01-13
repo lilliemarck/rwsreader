@@ -27,7 +27,7 @@
 
 namespace rw
 {
-	struct KeyFrame
+	struct HAnimKeyFrame
 	{
 		float	time;			/**< Time of keyframe				*/
 		Quat	orientation;	/**< Orientation					*/
@@ -64,16 +64,16 @@ namespace rw
 	* 4     4 10 14 18 22
 	* 5     5 11 15 19 23
 	*/
-	class Animation
+	class HAnimAnimation
 	{
 	public:
-		Animation	();
-		~Animation	();
+		HAnimAnimation	();
+		~HAnimAnimation	();
 		void read(Stream &stream);
 		
-		int			m_numFrames;
-		float		m_duration;
-        KeyFrame*	m_frames;
+		int				m_numFrames;
+		float			m_duration;
+        HAnimKeyFrame*	m_frames;
 	};
 }
 

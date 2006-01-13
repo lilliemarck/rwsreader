@@ -49,9 +49,9 @@ void rw::HAnimHierarchy::read(Stream &stream)
 	m_nodeInfo = new HAnimNodeInfo[m_numNodes];
 	for (int i = 0; i < m_numNodes; i++)
 	{
-		stream.read(&m_nodeInfo->m_nodeID);		// Same as NodeIndex if not changed by artist
-		stream.read(&m_nodeInfo->m_nodeIndex);
-		stream.read(reinterpret_cast<int*>(&m_nodeInfo->m_flags));
+		stream.read(&m_nodeInfo[i].m_nodeID);		// Same as NodeIndex if not changed by artist
+		stream.read(&m_nodeInfo[i].m_nodeIndex);
+		stream.read(reinterpret_cast<int*>(&m_nodeInfo[i].m_flags));
 	}
 }
 
@@ -59,6 +59,8 @@ void rw::HAnimHierarchy::read(Stream &stream)
 rw::Frame::Frame()
 {
 	MemZero(this);
+	m_id = -1;
+	m_parent = -1;
 }
 
 
@@ -119,7 +121,7 @@ void rw::FrameList::read(Stream &stream)
 				if (chunkHeaderInfo.length > 12) {
 					m_frames[i].m_HAnimHierarchy = new HAnimHierarchy;
 					m_frames[i].m_HAnimHierarchy->read(stream);
-					m_frames[i].m_id = m_frames[i].m_HAnimHierarchy->m_numNodes;
+					m_frames[i].m_id = 0;
 				}
 				else {
 					int unknown;

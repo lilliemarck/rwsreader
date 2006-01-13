@@ -45,6 +45,7 @@ namespace rw
 
 		// Criterion Toolkit
 		ID_MORPHPLUGIN		= 0x0105,
+		ID_SKINPLUGIN		= 0x0116,
 		ID_HANIMPLUGIN		= 0x011e,
 		ID_USERDATAPLUGIN	= 0x011f,
 

@@ -43,6 +43,9 @@ rw::Geometry::Geometry(void)
 
 rw::Geometry::~Geometry()
 {
+	delete [] m_skinToBoneMatrices;
+	delete [] m_vertexBoneWeights;
+	delete [] m_vertexBoneIndices;
 	delete [] m_norphInterpolators;
 
 	for (int i=0; i<m_numMorphTargets; i++)
@@ -52,7 +55,6 @@ rw::Geometry::~Geometry()
 	}
 
 	delete [] m_morphTargets;
-
 	delete [] m_triangles;
 
 	for (int i=0; i<m_numTexCoordSets; i++)
@@ -104,8 +106,6 @@ void rw::Geometry::read(Stream &stream)
 		stream.read(reinterpret_cast<short *>(&triangle.vertIndex[2]));
 	}
 
-	// Bounding sphere
-
 	// Morph targets
 	m_morphTargets = new MorphTarget[m_numMorphTargets];
 	for (int i=0; i<m_numMorphTargets; i++)
@@ -132,7 +132,7 @@ void rw::Geometry::read(Stream &stream)
 	// Material list chunk
 	stream.read(&chunkHeaderInfo);
 	if (chunkHeaderInfo.type != ID_MATLIST) {
-		std::cerr << "Unknown format of Clump";
+		std::cerr << "Unknown format of Geometry";
 		return;
 	}
 	m_materialList.read(stream);
@@ -151,35 +151,73 @@ void rw::Geometry::read(Stream &stream)
 
 		switch (chunkHeaderInfo.type)
 		{
-			case ID_MORPHPLUGIN:
-				std::cout << "Morph plugin" << std::endl;
-				stream.read(&m_numMorphInterpolators);
-				m_norphInterpolators = new MorphInterpolator[m_numMorphInterpolators];
-				for (int i=0; i<m_numMorphInterpolators; i++) {
-					int pos = stream.m_file.tellg();
-					int flags; // unused
-					stream.read(&flags);
-					stream.read(&m_norphInterpolators[i].startMorphTarget);
-					stream.read(&m_norphInterpolators[i].endMorphTarget);
-					stream.read(&m_norphInterpolators[i].time);
-					stream.read(&m_norphInterpolators[i].next);
+		case ID_MORPHPLUGIN:
+			std::cout << "Morph plugin" << std::endl;
+			stream.read(&m_numMorphInterpolators);
+			m_norphInterpolators = new MorphInterpolator[m_numMorphInterpolators];
+			for (int i=0; i<m_numMorphInterpolators; i++) {
+				int pos = stream.m_file.tellg();
+				int flags; // unused
+				stream.read(&flags);
+				stream.read(&m_norphInterpolators[i].startMorphTarget);
+				stream.read(&m_norphInterpolators[i].endMorphTarget);
+				stream.read(&m_norphInterpolators[i].time);
+				stream.read(&m_norphInterpolators[i].next);
+			}
+			break;
+
+		case ID_SKINPLUGIN:
+			{
+				std::cout << "Skin plugin";
+				unsigned int header;
+				stream.read((int*)&header);
+				m_numBones = header & 0x000000FF;
+
+				// Some unknown data
+				unsigned int numSomething = (header & 0x0000FF00) >> 8;
+				for (unsigned int i=0; i < numSomething; i++) {
+					unsigned char unknown;
+					stream.read((void*)&unknown, 1);
 				}
-				break;
 
-			case ID_USERDATAPLUGIN:
-				std::cout << "UserData plugin";
-				stream.skip(chunkHeaderInfo.length);
-				break;
+				// Vertex indices
+				m_vertexBoneIndices = new unsigned int[m_numVertices];
+				for (int i=0; i < m_numVertices; i++)
+					stream.read((int*)&m_vertexBoneIndices[i]);
 
-			case ID_BINMESHPLUGIN:
-				std::cout << "Bin mesh plugin";
-				stream.skip(chunkHeaderInfo.length);
-				break;
+				// Vertex weights
+				m_vertexBoneWeights = new MatrixWeights[m_numVertices];
+				for (int i=0; i < m_numVertices; i++) {
+					for (int j=0; j<4; j++) 
+						stream.read(&m_vertexBoneWeights[i].weights[j]);
+				}
 
-			default:
-				std::cout << "Unknown geometry extension " << chunkHeaderInfo.type;
-				stream.skip(chunkHeaderInfo.length);
-				break;
+				// Bone matrices
+				m_skinToBoneMatrices = new Matrix44[m_numVertices];
+				for (int i=0; i < m_numBones; i++) {
+					for (int j=0; j<16; j++)
+						stream.read(&m_skinToBoneMatrices[i].m[j]);
+				}
+
+				// Always 12 zero bytes at end...
+				stream.skip(12);
+			}
+			break;
+
+		case ID_USERDATAPLUGIN:
+			std::cout << "UserData plugin";
+			stream.skip(chunkHeaderInfo.length);
+			break;
+
+		case ID_BINMESHPLUGIN:
+			std::cout << "Bin mesh plugin";
+			stream.skip(chunkHeaderInfo.length);
+			break;
+
+		default:
+			std::cout << "Unknown geometry extension " << chunkHeaderInfo.type;
+			stream.skip(chunkHeaderInfo.length);
+			break;
 		}
 	}
 }

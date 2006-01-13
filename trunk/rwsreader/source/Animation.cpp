@@ -24,19 +24,19 @@
 #include "Core.h"
 #include "Animation.h"
 
-rw::Animation::Animation()
+rw::HAnimAnimation::HAnimAnimation()
 {
 	MemZero(this);
 }
 
 
-rw::Animation::~Animation()
+rw::HAnimAnimation::~HAnimAnimation()
 {
 	delete [] m_frames;
 }
 
 
-void rw::Animation::read(Stream &stream)
+void rw::HAnimAnimation::read(Stream &stream)
 {
 	// Read info
 	int unknown;
@@ -49,10 +49,10 @@ void rw::Animation::read(Stream &stream)
 	stream.read(&m_duration);
 
 	// Read keyframes
-	m_frames = new KeyFrame[m_numFrames];
+	m_frames = new HAnimKeyFrame[m_numFrames];
 	for (int i=0; i<m_numFrames; i++)
 	{
-		rw::KeyFrame &frame = m_frames[i];
+		rw::HAnimKeyFrame &frame = m_frames[i];
 		stream.read(&frame.time);
 		stream.read(reinterpret_cast<float *>(&frame.orientation), sizeof(Quat));
 		stream.read(reinterpret_cast<float *>(&frame.translation), sizeof(Vector));

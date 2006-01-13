@@ -58,6 +58,17 @@ namespace rw
 		int		next;				/**< Index of next MorphInterpolator	*/
 	};
 
+	/**
+	* Skin plugin
+	*/
+	struct MatrixWeights
+	{
+		float weights[4]; /** Zero weights must come last */
+	};
+	struct Matrix44
+	{
+		float m[16]; // Column major
+	};
 
 	/**
 	* Contains mesh data stored in Triangles and in
@@ -100,6 +111,12 @@ namespace rw
 		// Morph animation extension
 		int					m_numMorphInterpolators;
 		MorphInterpolator*	m_norphInterpolators;
+
+		// Skin extension
+		int					m_numBones;				/** Number of bones						*/
+		unsigned int*		m_vertexBoneIndices;	/** 4 8-bit indices into HAnimHierarchy::m_nodeInfo. LSB is weight 0 */
+		MatrixWeights*		m_vertexBoneWeights;	/** Weights for vertices				*/
+		Matrix44*			m_skinToBoneMatrices;	/** Model-to-Bone/Inverse bone matrices	*/
 	};
 
 

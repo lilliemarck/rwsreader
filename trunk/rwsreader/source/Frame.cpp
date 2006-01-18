@@ -99,11 +99,10 @@ void rw::FrameList::read(Stream &stream)
 	stream.read(&m_numFrames);
 	m_frames = new Frame[m_numFrames];
 	for (int i=0; i<m_numFrames; i++) {
-		int unknown;
 		m_frames[i].m_matrix.read(stream);
 		stream.read(&m_frames[i].m_parent);
-		stream.read(&unknown);
-		assert(unknown == 0 && "Unknown was value different than usual");
+		unsigned int unknown;
+		stream.read((int*)&unknown);
 	}
 
 	// Extensions, one for each Frame
@@ -137,7 +136,6 @@ void rw::FrameList::read(Stream &stream)
 			else {
 				stream.skip(chunkHeaderInfo.length);
 			}
-
 		}
 	}
 }

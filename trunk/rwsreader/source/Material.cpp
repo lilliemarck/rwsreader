@@ -106,9 +106,12 @@ void rw::MaterialList::read(Stream &stream)
 	stream.read(&m_numMaterials);
 
 	if (m_numMaterials > 0) {
-		int unknown;
-		stream.read(&unknown);
-		assert(unknown == -1 && "Unknown was value different than ususal");
+		for (int i=0; i<m_numMaterials; i++)
+		{
+			int unknown;
+			stream.read(&unknown);
+			assert(unknown == -1 && "Unknown was value different than ususal");
+		}
 
 		m_materials = new Material[m_numMaterials];
 		for (int i=0; i<m_numMaterials; i++)

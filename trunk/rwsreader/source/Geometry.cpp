@@ -35,7 +35,7 @@ rw::MorphInterpolator::MorphInterpolator()
 }
 
 
-rw::Geometry::Geometry(void)
+rw::Geometry::Geometry()
 {
 	MemZero(this);
 }

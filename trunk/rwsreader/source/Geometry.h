@@ -106,10 +106,10 @@ namespace rw
 		int					m_numVertices;
 		int					m_numMorphTargets;
 		int					m_numTexCoordSets;
-		Triangle *			m_triangles;
-		Color *				m_preLitLum;
-		TexCoords *			m_texCoords[RW_GEOMETRY_MAX_TEXTURE_COORDS];
-		MorphTarget *		m_morphTargets;
+		Triangle*			m_triangles;
+		Color*				m_preLitLum;
+		TexCoords*			m_texCoords[RW_GEOMETRY_MAX_TEXTURE_COORDS];
+		MorphTarget*		m_morphTargets;
 		MaterialList		m_materialList;
 
 		// Morph animation extension

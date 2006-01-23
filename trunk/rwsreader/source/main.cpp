@@ -3,6 +3,7 @@
 #include "Animation.h"
 #include "Clump.h"
 #include "Stream.h"
+#include "World.h"
 
 int main(int argc, const char *argv[])
 {
@@ -11,8 +12,8 @@ int main(int argc, const char *argv[])
     stream.open(argv[1]);
 
 	// Read the header
-	rw::ChunkHeaderInfo chunkHeaderInfo;
-	stream.read(&chunkHeaderInfo);
+//	rw::ChunkHeaderInfo chunkHeaderInfo;
+//	stream.read(&chunkHeaderInfo);
 	
 	// Usually you want to find the object
 	// for example
@@ -21,28 +22,38 @@ int main(int argc, const char *argv[])
 	// rw::Clump clump;
 	// clump.read(stream);
 
-	if (chunkHeaderInfo.type == rw::ID_CLUMP)
-    {
-		rw::Clump clump;
-		clump.read(stream);
-
-		// Don't need this check
-		int pos = stream.m_file.tellg();
-		stream.m_file.seekg(0, std::ios::end);
-		int end = stream.m_file.tellg();
-		assert(pos == end);
-	}
-	else if (chunkHeaderInfo.type == rw::ID_HANIMANIMATION)
+	if (stream.findChunk(rw::ID_WORLD))
 	{
-		rw::Animation clump;
-		clump.read(stream);
-
-		// Don't need this check
+		rw::World world;
+		world.read(stream);
 		int pos = stream.m_file.tellg();
 		stream.m_file.seekg(0, std::ios::end);
 		int end = stream.m_file.tellg();
 		assert(pos == end);
 	}
+
+	//if (chunkHeaderInfo.type == rw::ID_CLUMP)
+ //   {
+	//	rw::Clump clump;
+	//	clump.read(stream);
+
+	//	// Don't need this check
+	//	int pos = stream.m_file.tellg();
+	//	stream.m_file.seekg(0, std::ios::end);
+	//	int end = stream.m_file.tellg();
+	//	assert(pos == end);
+	//}
+	//else if (chunkHeaderInfo.type == rw::ID_HANIMANIMATION)
+	//{
+	//	rw::Animation clump;
+	//	clump.read(stream);
+
+	//	// Don't need this check
+	//	int pos = stream.m_file.tellg();
+	//	stream.m_file.seekg(0, std::ios::end);
+	//	int end = stream.m_file.tellg();
+	//	assert(pos == end);
+	//}
 
 	return 0;
 }

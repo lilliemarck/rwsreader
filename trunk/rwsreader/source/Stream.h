@@ -28,7 +28,7 @@ namespace rw
 {
 	enum ObjectID
 	{
-		// Corerw
+		// Core
         ID_NA_OBJECT		= 0x00,
 		ID_STRUCT			= 0x01,
 		ID_STRING			= 0x02,
@@ -36,12 +36,16 @@ namespace rw
 		ID_TEXTURE			= 0x06,
 		ID_MATERIAL			= 0x07,
 		ID_MATLIST			= 0x08,
+		ID_ATOMICSECT		= 0x09,
+		ID_WORLD			= 0x0B,
 		ID_FRAMELIST		= 0x0E,
 		ID_GEOMETRY			= 0x0F,
 		ID_CLUMP			= 0x10,
 		ID_ATOMIC			= 0x14,
 		ID_GEOMETRYLIST		= 0x1A,
 		ID_HANIMANIMATION	= 0x1B,
+		ID_CHUNKGROUPSTART	= 0x29,
+		ID_CHUNKGROUPEND	= 0x2A,
 
 		// Criterion Toolkit
 		ID_MORPHPLUGIN		= 0x0105,

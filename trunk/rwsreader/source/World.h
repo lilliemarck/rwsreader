@@ -19,67 +19,52 @@
 * 3. This notice may not be removed or altered from any source distribution.
 */
 
-#ifndef RW_CORE_H
-#define RW_CORE_H
+#ifndef RW_WORLD
+#define RW_WORLD
 
+#include "Material.h"
+#include "Core.h"
 #include "Stream.h"
 
 namespace rw
 {
-	template <typename T> void MemZero(T *m) { memset(m, 0, sizeof(T)); }
+	typedef char Normal[4]; // 3 values plus 1 pad byte.
 
-	struct Vector
-	{
-		float x, y, z;
-	};
-
-	struct BoundingBox
-	{
-		Vector lower; 
-		Vector upper;
-	};
-
-	struct Color
-	{
-		unsigned char red;
-		unsigned char green;
-		unsigned char blue;
-		unsigned char alpha;
-	};
-
-	class Matrix
+	class Sector
 	{
 	public:
-		void read(Stream &stream);
+				 Sector	();
+				~Sector	();
+		void	read	(Stream &stream);
 
-		Vector right;	/**< X-axis		*/
-		Vector up;		/**< Y-axis		*/
-		Vector at;		/**< Z-axis		*/
-		Vector pos;		/**< Position	*/
+		int			m_numTriangles;
+		int			m_numVertices;
+		BoundingBox	m_boundingBox;
+		Vector*		m_vertices;
+		Normal*		m_normals;
+		TexCoords*	m_texCoords;
+		Triangle*	m_triangles;
 	};
 
-	struct Quat
+	/**
+	*
+	*/
+	class World
 	{
-		float x, y, z, w;
-	};
+	public:
+				 World	();
+				~World	();
+		void	read	(Stream &stream);
 
-	struct Sphere
-	{
-		Vector	center;
-		float	radius;
-	};
-
-	struct TexCoords
-	{
-		float u;
-		float v;
-	};
-
-	struct Triangle
-	{
-		unsigned short vertIndex[3];
-		unsigned short matIndex;
+		Vector			m_origin;
+		int				m_numTriangles;
+		int				m_numVertices;
+		int				m_numSectors;
+		int				m_flags;
+		BoundingBox		m_boundingBox;
+		MaterialList	m_materialList;
+		Sector*			m_sectors;
 	};
 }
 
-#endif // RW_CORE_H
+#endif // RW_WORLD

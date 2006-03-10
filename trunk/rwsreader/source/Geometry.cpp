@@ -46,7 +46,7 @@ rw::Geometry::~Geometry()
 	delete [] m_skinToBoneMatrices;
 	delete [] m_vertexBoneWeights;
 	delete [] m_vertexBoneIndices;
-	delete [] m_norphInterpolators;
+	delete [] m_morphInterpolators;
 
 	for (int i=0; i<m_numMorphTargets; i++)
 	{
@@ -154,15 +154,15 @@ void rw::Geometry::read(Stream &stream)
 		case ID_MORPHPLUGIN:
 			std::cout << "Morph plugin" << std::endl;
 			stream.read(&m_numMorphInterpolators);
-			m_norphInterpolators = new MorphInterpolator[m_numMorphInterpolators];
+			m_morphInterpolators = new MorphInterpolator[m_numMorphInterpolators];
 			for (int i=0; i<m_numMorphInterpolators; i++) {
 				int pos = stream.m_file.tellg();
 				int flags; // unused
 				stream.read(&flags);
-				stream.read(&m_norphInterpolators[i].startMorphTarget);
-				stream.read(&m_norphInterpolators[i].endMorphTarget);
-				stream.read(&m_norphInterpolators[i].time);
-				stream.read(&m_norphInterpolators[i].next);
+				stream.read(&m_morphInterpolators[i].startMorphTarget);
+				stream.read(&m_morphInterpolators[i].endMorphTarget);
+				stream.read(&m_morphInterpolators[i].time);
+				stream.read(&m_morphInterpolators[i].next);
 			}
 			break;
 

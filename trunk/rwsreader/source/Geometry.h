@@ -114,7 +114,7 @@ namespace rw
 
 		// Morph animation extension
 		int					m_numMorphInterpolators;
-		MorphInterpolator*	m_norphInterpolators;
+		MorphInterpolator*	m_morphInterpolators;
 
 		// Skin extension
 		int					m_numBones;				/** Number of bones						*/

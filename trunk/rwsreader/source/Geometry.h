@@ -38,14 +38,14 @@ namespace rw
 	public:
 		MorphTarget();
 
-		Sphere	boundingSphere;	/**< Bounding sphere that encapulates the geometry	*/
+		Sphere	boundingSphere;	/**< Bounding sphere that encapsulates the geometry	*/
 		Vector*	vertices;		/**< Vertex list for geomtery						*/
 		Vector*	normals;		/**< Normal list for geometry						*/
 	};
 
 
 	/**
-	* Morph animation extension
+	* Morph animation extension-
 	*/
 	class MorphInterpolator
 	{
@@ -94,7 +94,7 @@ namespace rw
 			GF_NATIVE					= 0x01000000,
 			GF_NATIVE_INSTANCE			= 0x02000000,
 			GF_FLAGS_MASK				= 0x000000FF,
-			GF_NATIVE_FLAGS_MASK		= 0x0F000000,
+			GF_NATIVE_FLAGS_MASK		= 0x0F000000
 		};
 
 				 Geometry	();

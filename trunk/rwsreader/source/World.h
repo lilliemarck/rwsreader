@@ -35,7 +35,7 @@ namespace rw
 	public:
 				 Sector	();
 				~Sector	();
-		void	read	(Stream &stream);
+		void	read	(Stream &stream, bool textured);
 
 		int			m_numTriangles;
 		int			m_numVertices;
@@ -52,6 +52,23 @@ namespace rw
 	class World
 	{
 	public:
+		enum Flag
+		{
+			F_TRISTRIP					= 0x01,
+			F_POSITIONS					= 0x02,
+			F_TEXTURED					= 0x04,
+			F_PRELIT					= 0x08,
+			F_NORMALS					= 0x10,
+			F_LIGHT						= 0x20,
+			F_MODULATE_MATERIAL_COLOR	= 0x40,
+			F_TEXTURED2					= 0x80,
+			F_NATIVE					= 0x01000000,
+			F_NATIVE_INSTANCE			= 0x02000000,
+			F_FLAGSMASK					= 0x000000FF,
+			F_NATIVE_FLAGS_MASK			= 0x0F000000,
+			F_SECTORS_OVERLAP			= 0x40000000
+		};
+
 				 World	();
 				~World	();
 		void	read	(Stream &stream);
@@ -60,7 +77,7 @@ namespace rw
 		int				m_numTriangles;
 		int				m_numVertices;
 		int				m_numSectors;
-		int				m_flags;
+		Flag			m_flags;
 		BoundingBox		m_boundingBox;
 		MaterialList	m_materialList;
 		Sector*			m_sectors;

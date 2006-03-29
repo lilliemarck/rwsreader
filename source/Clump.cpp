@@ -44,9 +44,9 @@ void rw::Atomic::read(Stream &stream)
 	stream.read(&m_frame);
 	stream.read(&m_geometry);
 	stream.read(&unknown);
-	assert(unknown == 5 && "Unknown was value different than ususal");
+	assert(unknown == 5 && "Unknown was value different than usual");
 	stream.read(&unknown);
-	assert(unknown == 0 && "Unknown was value different than ususal");
+	assert(unknown == 0 && "Unknown was value different than usual");
 
 	// Extension chunk
 	stream.read(&chunkHeaderInfo);

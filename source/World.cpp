@@ -154,7 +154,7 @@ void rw::World::read(Stream &stream)
 			std::cerr << "Unknown format of World";
 			return;
 		}
-		m_sectors[i].read(stream, m_flags & F_TEXTURED);
+		m_sectors[i].read(stream, (m_flags & F_TEXTURED) != 0);
 	}
 
 	// Extension

@@ -50,10 +50,10 @@ void rw::Material::read(Stream &stream)
 	int unknown;
 	int textured;
 	stream.read(&unknown);
-	assert(unknown == 0 && "Unknown was value different than ususal");
+	assert(unknown == 0 && "Unknown was value different than usual");
 	stream.read((void *)&m_color, sizeof(Color));
 	stream.read(&unknown);
-//	assert(unknown == 0xE28E70C && "Unknown was value different than ususal");
+//	assert(unknown == 0xE28E70C && "Unknown was value different than usual");
 	stream.read(&textured);
 	stream.read(&m_ambient);
 	stream.read(&m_specular);
@@ -110,7 +110,7 @@ void rw::MaterialList::read(Stream &stream)
 		{
 			int unknown;
 			stream.read(&unknown);
-			assert(unknown == -1 && "Unknown was value different than ususal");
+			assert(unknown == -1 && "Unknown was value different than usual");
 		}
 
 		m_materials = new Material[m_numMaterials];
